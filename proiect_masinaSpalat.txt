@@ -1,0 +1,367 @@
+#include "GLOS.H"
+#include<gl/GLAux.h>
+#include<gl/GL.H>
+#include<gl/GLU.H>
+#include<gl/GLAux.h>
+#include<math.h>
+
+void myinit(void);
+void CALLBACK display(void);
+void CALLBACK myReshape(GLsizei w, GLsizei h);
+void CALLBACK MutaStanga(void);
+void CALLBACK MutaDreapta(void);
+void CALLBACK MutaSus(void);
+void CALLBACK MutaJos(void);
+void CALLBACK rot_z_up(AUX_EVENTREC* event);
+void CALLBACK rot_z_down(AUX_EVENTREC* event);
+void cub(void);
+
+static GLfloat x = 0, y = 0, alfa = 0;
+GLUquadricObj* qobj;
+//GLUnurbsObj* theNurb;
+
+//#define stripeImageWidth 32
+//GLubyte stripeImage[3 * stripeImageWidth];
+
+//GLfloat texpts[2][2][2] = { {{0.0, 0.0}, {0.0, 1.0}},
+			//{{1.0, 0.0}, {1.0, 1.0}} }; //punctele de control pentru texturã
+
+/*void makeStripeImage(void)
+{ //construieste o textura 1D cu 3 octeti pentru fiecare texel
+	//din 32 texeli 5 sunt rosii si 27 sunt verzi
+	int j;
+
+	for (j = 0; j < stripeImageWidth; j++) {
+		stripeImage[3 * j] = (j <= 4) ? 255 : 100; //rosu
+		stripeImage[3 * j + 1] = (j > 4) ? 0 : 175; //verde
+		stripeImage[3 * j + 2] = 0; //galben
+	}
+}*/
+
+
+
+void myinit(void) {
+	glClearColor(1.0, 1.0, 1.0, 1.0); //background alb
+	glShadeModel(GL_SMOOTH);
+
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
+	//lumina ambientala in scena
+	//glEnable(GL_AUTO_NORMAL); //activare calculare normale daca vârfurile 
+	//s-au determinat cu GL_MAP2_VERTEX_3 sau GL_MAP2_VERTEX_4
+	//glEnable(GL_NORMALIZE); //activare normalizare (vectori unitari) vectori
+	//glDepthFunc(GL_LESS); //comparaţia la ascunderea suprafeţelor
+	//glEnable(GL_DEPTH_TEST); //activare test adâncime
+
+
+	//textura nu imi activeaza
+	//makeStripeImage();
+	////glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	//incercati si parametrul GL_DECAL. Veti constata ca nu se tine seama 
+	//de iluminare
+	//glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//incercati si cu GL_CLAMP. Nu se repeta texturarea. Se prelungec aceeiasi
+	//texel-i
+	//glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexImage1D(GL_TEXTURE_1D, 0, 3, stripeImageWidth, 0,
+		//GL_RGB, GL_UNSIGNED_BYTE, stripeImage); //specificare texturii
+
+
+//
+	//GL_EYE_PLANE
+	//ascunderea suprafeţelor
+	 //glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LESS);
+	//glEnable(GL_TEXTURE_GEN_Q);
+	//glEnable(GL_TEXTURE_1D);//texturare 1D
+	//tăierea feţelor fata
+	//glEnable(GL_CULL_FACE);
+	//glFrontFace(GL_CW);
+	//glCullFace(GL_FRONT);
+
+
+
+
+	//glMaterialf(GL_FRONT, GL_SHININESS, 7.0);//exponentul pentru strălucire
+
+
+
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+
+
+	//theNurb = gluNewNurbsRenderer();
+	//gluNurbsProperty(theNurb, GLU_SAMPLING_TOLERANCE, 10);
+
+
+}
+/*void cub(void)
+{
+	
+	//GLfloat more_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+	GLfloat light_position[] = { 0.32, 0.32, 0.32,0.32 };//practic lumina mi se puen dar nu se mai vad butoanele si cuva masinii
+	//GLfloat global_ambient[] = { 0.32f, 0.32f, 0.32f };
+	
+	//glEnable(GL_LIGHTING); //activare iluminare
+	//glEnable(GL_LIGHT0); //activare sursa 0
+	
+	
+	glBegin(GL_QUAD_STRIP);
+	//glEnable(GL_TEXTURE_1D);
+	glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+	glMaterialf(GL_FRONT, GL_SHININESS, 10.0);//exponentul pentru strãlucire
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_position);
+	//glLightfv(GL_LIGHT_MODEL_AMBIENT, GL_POSITION, light_position);
+	glColor3f(1.0, 1.0, 1.0);
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, 50.5, 50.5);
+
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, 50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, 50.5);
+	
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, 50.5, -50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, -50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, 50.5, -50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, -50.5);
+
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, 50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5,50.5);
+	
+	glEnd();
+	
+	glPushMatrix();//am vrut ca cercul sa mi se vada doar pe o fata a cubului
+	gluQuadricDrawStyle(qobj, GL_FILL);
+	//gluQuadricTexture(qobj, GL_TRUE);
+	glTranslatef(0, -5, 1);
+	glColor3f(0.65, 0.65, 0.65);
+	gluDisk(qobj, 25, 35, 35, 20);//practic asta e cuva masinii
+	glPopMatrix();
+
+	
+	glPushMatrix();//buton din mijloc
+	gluQuadricDrawStyle(qobj, GL_FILL);
+	//gluQuadricTexture(qobj, GL_TRUE);
+	glTranslatef(1, 40, 1);
+	glColor3f(0.65, 0.65, 0.65);
+	gluDisk(qobj, 0, 5, 5, 5);
+	glPopMatrix();
+
+	
+	glPushMatrix();//buton din dreapta
+	gluQuadricDrawStyle(qobj, GL_FILL);
+	//gluQuadricTexture(qobj, GL_TRUE);
+	glTranslatef(55, 40, 1);
+	glColor3f(0.65, 0.65, 0.65);
+	gluDisk(qobj, 0, 5, 5, 5);
+	glPopMatrix();
+
+	glPushMatrix();//buton din stanga
+	gluQuadricDrawStyle(qobj, GL_FILL);
+	//gluQuadricTexture(qobj, GL_TRUE);
+	glTranslatef(-55, 40, 1);
+	glColor3f(0.65, 0.65, 0.65);
+	gluDisk(qobj, 0, 5, 5, 5);
+	glPopMatrix();
+
+	
+	
+
+
+
+	glBegin(GL_QUAD_STRIP);
+	
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, 50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, 50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, 50.5, -50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, 50.5, -50.5);
+	glEnd();
+	
+
+	glBegin(GL_QUAD_STRIP);
+	
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, 50.5);
+	
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, 50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, -50.5);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, -50.5);
+	glEnd();
+	
+	
+	
+	
+	//glEnable(GL_CULL_FACE);//activeaza eliminarea fetelor
+	//glCullFace(GL_BACK);
+	glBegin(GL_QUAD_STRIP);
+
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, -50.5);
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, -50.5);
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(50.5, -50.5, 50.5);
+	glColor3f(0.32f, 0.32f, 0.32f);
+	glVertex3f(-50.5, -50.5, 50.5);
+	glEnd();
+	
+}*/
+
+void CALLBACK MutaStanga(void)
+{
+	x = x - 10;
+}
+
+void CALLBACK MutaDreapta(void)
+{
+	x = x + 10;
+}
+
+void CALLBACK MutaSus(void)
+{
+	y = y + 10;
+}
+
+void CALLBACK MutaJos(void)
+{
+	y = y - 10;
+}
+
+void CALLBACK rot_z_up(AUX_EVENTREC* event)
+{
+	alfa = alfa + 10;
+}
+
+void CALLBACK rot_z_down(AUX_EVENTREC* event)
+{
+	alfa = alfa - 10;
+}
+
+void CALLBACK display(void)
+{
+	//GLfloat light_position[] = { 0.32, 0.32, 0.32,0.32 };
+
+	//int i = 0;
+	//for (i = 0; i <= 360; i += 30)
+	//{
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//GLfloat ctlpoints[4][3] = { {-140, -60, 0.0},
+		//{-125, -20, 0.0}, {-115, -20, 0.0}, {-105, -60, 0.0} };
+
+		//GLfloat knots[8] = { 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0 };
+		glClear(GL_COLOR_BUFFER_BIT);
+		//glColor3f(0.1f, 0.1f, 0.1f);//grey
+		//gluBeginCurve(theNurb);
+		//gluNurbsCurve(theNurb,
+			//8, knots,
+			//3,
+			//&ctlpoints[0][0],
+			//4,
+			//GL_MAP1_VERTEX_3);
+		//gluEndCurve(theNurb);
+
+		glLoadIdentity();
+		qobj = gluNewQuadric();
+
+		
+		
+
+		//glRotatef(i, 1.0, 0, 1.0);
+		//glRotatef(alfa, 0, 1, 0);
+		//glTranslatef(0, -40, 0);
+
+		//glRotatef(alfa, 1, 1, 1);
+		
+
+		
+
+
+		
+
+		
+		//glTranslatef(0, 20, 0);
+		
+		
+
+	
+
+		
+		//glRotatef(30, 0, 1, 0);
+		//asa mi se invarte dupa axa x,se roteste drept
+		//cub();
+		//Sleep(400);
+		glFlush();
+		//auxSwapBuffers();
+	//}
+}
+
+
+void CALLBACK myReshape(GLsizei w, GLsizei h)
+{
+	if (!h) return;
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (w <= h)
+		glOrtho(-160.0, 160.0, 160.0 * (GLfloat)h / (GLfloat)w,
+			-160.0 * (GLfloat)h / (GLfloat)w, -100.0, 100.0);
+	else
+		glOrtho(-160.0 * (GLfloat)w / (GLfloat)h,
+			160.0 * (GLfloat)w / (GLfloat)h, -160.0, 160.0, -100.0, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argc, char** argv)
+{
+	auxInitDisplayMode(AUX_SINGLE | AUX_RGB | AUX_DEPTH);
+	//auxInitDisplayMode(AUX_DOUBLE | AUX_RGB | AUX_DEPTH);
+	auxInitPosition(100, 100, 1000, 800);
+	auxInitWindow("Masina de spalat traieste mai mult cu Calgon!");
+	myinit();
+
+	auxKeyFunc(AUX_LEFT, MutaStanga);
+	auxKeyFunc(AUX_RIGHT, MutaDreapta);
+	auxKeyFunc(AUX_UP, MutaSus);
+	auxKeyFunc(AUX_DOWN, MutaJos);
+	auxMouseFunc(AUX_LEFTBUTTON, AUX_MOUSEDOWN, rot_z_up);
+	auxMouseFunc(AUX_RIGHTBUTTON, AUX_MOUSEDOWN, rot_z_down);
+
+	auxReshapeFunc(myReshape);
+	auxMainLoop(display);
+	return(0);
+}
